@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人记账助手</title>
+    
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>个人记账助手</h1>
+    </header>
+
+    <div class="card">
+        <div class="summary-grid">
+            <div class="summary-item">
+                <div>本月支出</div>
+                <div class="summary-val" id="totalAmount">¥0.00</div>
+            </div>
+            <div class="summary-item">
+                <div>记录笔数</div>
+                <div class="summary-val" id="totalCount">0</div>
+            </div>
+        </div>
+        <div class="chart-container" id="chart"></div>
+    </div>
+
+    <form class="card" id="expenseForm">
+        <div class="form-group">
+            <input type="text" id="desc" placeholder="支出项目 (例如：午餐)" required>
+            <input type="number" id="amount" placeholder="金额 (¥)" step="0.01" required>
+            <select id="category">
+                <option value="餐饮">餐饮</option>
+                <option value="交通">交通</option>
+                <option value="购物">购物</option>
+                <option value="娱乐">娱乐</option>
+            </select>
+            <button type="submit">添加记录</button>
+        </div>
+    </form>
+
+    <div class="card">
+        <h3>近期明细</h3>
+        <div id="expenseList"></div>
+    </div>
+</div>
+
+<script>
+    let expenses = JSON.parse(localStorage.getItem('expenses')) || [
+        { id: 1, desc: '午餐', amount: 35.5, category: '餐饮' },
+        { id: 2, desc: '打车', amount: 22.0, category: '交通' }
+    ];
+
+    const form = document.getElementById('expenseForm');
+    const list = document.getElementById('expenseList');
+    const totalAmount = document.getElementById('totalAmount');
+    const totalCount = document.getElementById('totalCount');
+    const chart = document.getElementById('chart');
+
+    function updateUI() {
+        localStorage.setItem('expenses', JSON.stringify(expenses));
+        
+        // Update Stats
+        const total = expenses.reduce((sum, item) => sum + item.amount, 0);
+        totalAmount.innerText = `¥${total.toFixed(2)}`;
+        totalCount.innerText = expenses.length;
+
+        // Render List
+        list.innerHTML = expenses.map(item => `
+            <div class="list-item">
+                <div><strong>${item.desc}</strong> <small>(${item.category})</small></div>
+                <div>¥${item.amount.toFixed(2)} <button class="del-btn" onclick="deleteExpense(${item.id})">删除</button></div>
+            </div>
+        `).join('');
+
+        // Render Chart
+        const categories = ['餐饮', '交通', '购物', '娱乐'];
+        const data = categories.map(cat => ({
+            cat,
+            val: expenses.filter(e => e.category === cat).reduce((s, e) => s + e.amount, 0)
+        }));
+        const max = Math.max(...data.map(d => d.val), 1);
+        chart.innerHTML = data.map(d => `
+            <div class="bar-wrapper">
+                <div class="bar" style="height: ${(d.val/max)*100}%"></div>
+                <small>${d.cat}</small>
+            </div>
+        `).join('');
+    }
+
+    form.onsubmit = (e) => {
+        e.preventDefault();
+        const newExpense = {
+            id: Date.now(),
+            desc: document.getElementById('desc').value,
+            amount: parseFloat(document.getElementById('amount').value),
+            category: document.getElementById('category').value
+        };
+        expenses.push(newExpense);
+        form.reset();
+        updateUI();
+    };
+
+    function deleteExpense(id) {
+        expenses = expenses.filter(e => e.id !== id);
+        updateUI();
+    }
+
+    updateUI();
+</script>
+</body>
+</html>
