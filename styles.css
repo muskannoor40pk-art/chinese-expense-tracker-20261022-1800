@@ -1,0 +1,34 @@
+:root {
+            --primary: #2563eb;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --danger: #ef4444;
+            --success: #22c55e;
+            --border: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; padding: 20px; }
+        
+        .container { max-width: 600px; margin: 0 auto; }
+        header { margin-bottom: 24px; text-align: center; }
+        
+        .card { background: var(--card); padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        
+        .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+        .summary-item { text-align: center; }
+        .summary-val { font-size: 1.5rem; font-weight: bold; color: var(--primary); }
+        
+        .form-group { display: flex; flex-direction: column; gap: 10px; }
+        input, select, button { padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; }
+        button { background: var(--primary); color: white; border: none; cursor: pointer; transition: opacity 0.2s; }
+        button:hover { opacity: 0.9; }
+
+        .chart-container { height: 200px; display: flex; align-items: flex-end; gap: 10px; padding: 20px 0; border-bottom: 1px solid var(--border); }
+        .bar-wrapper { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .bar { width: 100%; background: var(--primary); border-radius: 4px 4px 0 0; transition: height 0.5s ease; }
+        
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .list-item:last-child { border: none; }
+        .del-btn { color: var(--danger); background: none; padding: 5px; font-size: 0.8rem; }
